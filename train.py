@@ -15,13 +15,13 @@ from torchvision.transforms import RandomChoice
 from torch.utils import data
 from tqdm import tqdm
 
-from CubiCasa5k.floortrans.aleads_loaders.augmentations import (RandomCropToSizeTorch,
-                                              ResizePaddedTorch,
-                                              Compose,
-                                              DictToTensor,
-                                              ColorJitterTorch,
-                                              RandomRotations)
-from floortrans.aleads_loaders.aleads_svg_loader import FloorplanSVG
+from CubiCasa5k.floortrans.aleads_loaders.augmentations import (
+    RandomCropToSizeTorch,
+    ResizePaddedTorch,
+    Compose
+)
+
+from dataloader import FloorLoader
 
 def train_net(net, args):
     
@@ -31,21 +31,26 @@ def train_net(net, args):
             ResizePaddedTorch((0, 0), data_format='dict', size=(args.image_size, args.image_size))
         ])
     ])
-                       #DictToTensor()])
-                       #ColorJitterTorch()])
+    #DictToTensor()])
+    #ColorJitterTorch()])
     
-    train_set = FloorplanSVG(args.data_path, 'train.txt', format='lmdb',
-                            augmentations=aug)
-    val_set = FloorplanSVG(args.data_path, 'val.txt', format='lmdb',
-                           augmentations=None)
+    train_set = FloorLoader(
+        args.data_path, 'train.txt', augmentations=aug
+    )
+    val_set = FloorLoader(
+        args.data_path, 'val.txt'
+    )
 
     
-    trainloader = data.DataLoader(train_set, batch_size=args.batch_size,
-                                  num_workers=8, shuffle=True, pin_memory=True)
+    trainloader = data.DataLoader(
+        train_set, batch_size=args.batch_size,
+        num_workers=8, shuffle=True, pin_memory=True
+    )
 
-    valloader = data.DataLoader(val_set, batch_size=1,
-                                num_workers=8, pin_memory=True)
-
+    valloader = data.DataLoader(
+        val_set, batch_size=1,
+        num_workers=8, pin_memory=True
+    )
 
 
     optimizer = optim.SGD(net.parameters(),
