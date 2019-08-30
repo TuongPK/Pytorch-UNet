@@ -1,0 +1,8 @@
+#!/bin/zsh
+export CUBI_ROOT="/home/kush/githubs/ras2vec/CubiCasa5k"
+export RAS2VEC_ROOT="/home/kush/githubs/ras2vec"
+export PYTHONPATH=$CUBI_ROOT:$RAS2VEC_ROOT:$(pwd)
+#export PYTHONPATH=$PYTHONPATH:$(pwd)
+echo $PYTHONPATH
+
+echo "set env variable"

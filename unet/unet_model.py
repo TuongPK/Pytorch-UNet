@@ -1,5 +1,7 @@
 # full assembly of the sub-parts to form the complete net
 
+import torch
+import torch.nn as nn
 import torch.nn.functional as F
 
 from .unet_parts import *
@@ -29,4 +31,26 @@ class UNet(nn.Module):
         x = self.up3(x, x2)
         x = self.up4(x, x1)
         x = self.outc(x)
-        return F.sigmoid(x)
+        return torch.softmax(x, dim=1)
+
+def get_model(cfg, is_train=False):
+    n_channels = cfg.n_channels
+    n_classes = cfg.n_classes
+    weight = cfg.weight
+
+    model = UNet(n_channels, n_classes)
+    
+    if is_train:
+        model.train()
+    else:
+        model.eval()
+
+    if weight:
+        model.load_state_dict(
+            torch.load(weight)
+        )
+        print('Model loaded from {}'.format(weight))
+    else:
+        print('Checkpoint not found')
+        
+    return model

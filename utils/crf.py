@@ -1,3 +1,4 @@
+"""
 import numpy as np
 import pydensecrf.densecrf as dcrf
 
@@ -23,3 +24,4 @@ def dense_crf(img, output_probs):
     Q = np.argmax(np.array(Q), axis=0).reshape((h, w))
 
     return Q
+"""
